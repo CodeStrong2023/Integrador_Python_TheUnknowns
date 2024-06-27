@@ -162,3 +162,117 @@ class frame_main(tk.Frame):
             titulo = "Eliminar producto"
             mensaje= "No se ha seleccionado ningun producto"
             messagebox.showwarning(titulo, mensaje)
+            
+            
+######################## Barra de menu
+def menu(root):
+    #instancia de la clase menu
+    menu = tk.Menu(root) 
+    #se fija a la ventana root
+    root.config(menu=menu, width=600, height=500)
+    
+    ##PARA AGREGAR MAS MENU A LA VENTANA SE REPITEN LOS PROCESOS A CONTINUACION:  
+    
+    #se crea la primer pestaña de la barra de menu
+    menu_principal = tk.Menu(menu, tearoff= 0) #tearoff borra la linea punteada al principio del menu
+    menu.add_cascade(label= 'Archivo', menu = menu_principal) #menu desplegable
+    #etiquetas del menu desplegable
+    menu_principal.add_command(label ='Nuevo producto', command=nuevo_producto)
+    menu_principal.add_command(label ='Eliminar producto')
+    menu_principal.add_separator()
+    menu_principal.add_command(label ='Salir', command=root.destroy) #comman= root.destroy para cerrar el programa
+    
+    #MENU BASE DE DATOS
+    menu_database = tk.Menu(menu, tearoff= 0)
+    menu.add_cascade(label= 'Base de datos', menu=menu_database)
+    menu_database.add_command(label='Crear base de datos', command= crear_tabla)
+    menu_database.add_command(label='Borrar base de datos', command= borrar_tabla)    
+    
+    
+    #menu ayuda
+    ayuda=tk.Menu(menu, tearoff=0) 
+    menu.add_cascade(label='Ayuda', menu=ayuda)
+    ayuda.add_command(label='Sobre nosotros...', command= about) #se llama a la funcion para mostrar el mensaje
+    
+#sobre nosotros
+def about():
+    messagebox.showinfo('about','The Unknowns') # titulo, mensaje a mostrar en la nueva ventana
+    
+    
+
+
+#######################  VENTANA SECUNDARIA ##############################
+## Creacion de ventana secundaria con Toplevel()
+def nuevo_producto():
+    ventana = Toplevel()
+    ventana.geometry('500x200')
+    ventana.resizable(0,0)
+    #uso de la clase frame, se le pasa como parametro la ventana secundaria
+    frame(root=ventana)
+    
+class frame(tk.Frame):    
+    
+    def __init__(self, root):
+        
+        #heredamos el constructor de la clase padre frame
+        super().__init__(root,width= 700, height=500) #se le pueden enviar configuraciones de frame como .config()
+        self.root = root
+        self.pack() # se empaqueta el frame dentro de la ventana
+        # self.config(width= 700, height=500, bg='grey') #configuracion del tamaño del frame, la ventana va a tomar el tamaño del frame
+        self.nombre_campos(root) #llamamos a la funcion campos para integrar la etiqueta al frame
+        
+        
+        
+    def nombre_campos(self, root):
+        #se crean las etiquetas de los campos
+        self.label_nombre = tk.Label(self, text= 'Producto') #se le da nombre 'producto' a la etiqueta
+        self.label_nombre.config(font=('Arial',12, 'bold')) #modificamos letra, tamaño, tipo
+        self.label_nombre.grid(row=0, column=0, padx=10, pady=10) #metodo grid para ubicar la etiqueta dentro del frame con filas/columnas
+        
+        self.label_cantidad = tk.Label(self, text= 'Cantidad') 
+        self.label_cantidad.config(font=('Arial',12, 'bold')) 
+        self.label_cantidad.grid(row=1, column=0, padx=10, pady=10) # pad x/y son los padding en cada eje
+        
+        self.label_precio = tk.Label(self, text= 'Precio') 
+        self.label_precio.config(font=('Arial',12, 'bold')) 
+        self.label_precio.grid(row=2, column=0, padx=10, pady=10)#columnspan cantidad de columnas que ocupa el campo
+        
+        #Se crean los campos inputs
+        self.nombre=tk.StringVar() #Stringvar se utiliza para enviar valores al campo. para limpiar se mandan valores vacios
+        self.input_nombre = tk.Entry(self, textvariable = self.nombre) #textvariable= self.nombre) se crea el objeto input con tk.Entry // textvariable: llama al objeto Stringvar
+        self.input_nombre.config(width=20, font=('Arial',12))
+        self.input_nombre.grid(row=0, column=1,padx=8, pady=10, columnspan=2)
+        
+        self.cantidad=tk.IntVar()
+        self.input_cantidad = tk.Entry(self, textvariable= self.cantidad)  
+        self.input_cantidad.config(width=20, font=('Arial',12)) #State es para habilitar o deshabilitar la escritura
+        self.input_cantidad.grid(row=1, column=1,padx=5, pady=10, columnspan=2)
+        
+        self.precio=tk.IntVar()
+        self.input_precio = tk.Entry(self, textvariable= self.precio)  
+        self.input_precio.config(width=20, font=('Arial',12))
+        self.input_precio.grid(row=2, column=1,padx=5, pady=10, columnspan=2)
+        
+        #Botones
+        self.boton_cancelar= tk.Button(self,text='Cancelar') # se crea el objeto boton
+        self.boton_cancelar.config(width=20, font=('Arial',12,'bold'), 
+                        fg='white', bg='red',# fg= color de letra
+                        cursor='hand2', # cursor: cambia el cursos a mano cuando se pasa por arriba del boton 
+                        activebackground='#B96161', #fondo cuando el boton se presiona
+                        activeforeground='white',#color de letra cuando el boton se presiona
+                        command=root.destroy) 
+        self.boton_cancelar.grid(row=4, column=1, padx=10, pady=10) #posicion en el frame
+        
+        
+        self.boton_aceptar= tk.Button(self, text='Aceptar', command=lambda: (self.guardar_producto(), root.destroy())) #funcion LAMNDA para ejecutar dos funciones
+        self.boton_aceptar.config(width=20, font=('Arial',12,'bold'), 
+                        fg='white', bg='green',
+                        cursor='hand2',  
+                        activebackground='#35BD6F',
+                        activeforeground='white') 
+        self.boton_aceptar.grid(row=4, column=0, padx=10, pady=10) 
+        
+    #CRUD
+    def guardar_producto(self):
+        
+        guardar(self.nombre.get(),self.cantidad.get(),self.precio.get())
