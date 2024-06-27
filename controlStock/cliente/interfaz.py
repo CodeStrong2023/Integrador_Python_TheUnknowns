@@ -192,7 +192,7 @@ def menu(root):
     #menu ayuda
     ayuda=tk.Menu(menu, tearoff=0) 
     menu.add_cascade(label='Ayuda', menu=ayuda)
-    ayuda.add_command(label='Sobre nosotros...', command= about) #se llama a la funcion para mostrar el mensaje
+    ayuda.add_command(label='Sobre nosotros...', command = about) #se llama a la funcion para mostrar el mensaje
     
 #sobre nosotros
 def about():
@@ -281,5 +281,4 @@ class frame(tk.Frame):
         
 
     def guardar_producto(self):
-        
         guardar(self.nombre.get(),self.cantidad.get(),self.precio.get())
