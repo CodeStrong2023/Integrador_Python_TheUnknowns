@@ -196,7 +196,14 @@ def menu(root):
     
 #sobre nosotros
 def about():
-    messagebox.showinfo('about','The Unknowns') # titulo, mensaje a mostrar en la nueva ventana
+    messagebox.showinfo('about',"""
+Grupo: TheUnknowns
+LEGAJOS
+Riera Arturo 10493
+Belich Juan Ignacio 10338
+Bilyk María sol 10341
+Ravanal Lautaro emanuel 10490
+""") # titulo, mensaje a mostrar en la nueva ventana
     
     
 
@@ -272,7 +279,7 @@ class frame(tk.Frame):
                         activeforeground='white') 
         self.boton_aceptar.grid(row=4, column=0, padx=10, pady=10) 
         
-    #CRUD
+
     def guardar_producto(self):
         
         guardar(self.nombre.get(),self.cantidad.get(),self.precio.get())
